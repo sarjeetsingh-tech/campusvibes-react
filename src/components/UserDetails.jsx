@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import SloganRotator from './SloganRotator';
 import TextField from '@mui/material/TextField';
-import { FcNext } from "react-icons/fc";
+import { FcNext, FcPrevious } from "react-icons/fc";
+import Checkbox from '@mui/material/Checkbox';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { FcPrevious } from "react-icons/fc";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import AuthImage from './AuthImage';
+
 function UserDetails() {
+    // State to manage active section and slogan index
     const [activeSection, setActiveSection] = useState(0);
-    const [sloganIndex, setSloganIndex] = useState(0); // State for managing SloganRotator index
+    const [sloganIndex, setSloganIndex] = useState(0);
+
+    // State for form data
     const [formData, setFormData] = useState({
         name: '',
         city: '',
@@ -17,32 +21,36 @@ function UserDetails() {
         dateOfBirth: '',
         gender: '',
         interests: [],
-        education:
-        {
+        education: {
             campus: '',
             passingYear: ''
         },
         contact: {
             phone: '',
             alternateEmail: ''
-        }
+        },
+        pinCode:''
     });
 
-    // Determine if it's a small screen
+    // State to determine if it's a small screen
     const [isSmallScreen, setIsSmallScreen] = useState(false);
 
+    // Handle form submission
     const handleSubmit = async () => {
         try {
-            console.log('hiiii')
+            // Submit form data
+            const token=localStorage.getItem('token');
             const response = await fetch('http://localhost:3000/user/details', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization':`Bearer ${token}`,
                 },
                 body: JSON.stringify(formData)
             });
 
             if (response.ok) {
+                // Handle successful submission
                 console.log('User details submitted successfully');
                 const data = await response.json();
                 console.log(data.redirectURL);
@@ -52,7 +60,6 @@ function UserDetails() {
                     setError('Redirect URL not provided');
                 }
                 // Optionally, you can reset the form data state here
-
             } else {
                 console.error('Failed to submit user details');
             }
@@ -61,7 +68,7 @@ function UserDetails() {
         }
     };
 
-
+    // Effect hook to handle window resize
     useEffect(() => {
         const handleResize = () => {
             setIsSmallScreen(window.innerWidth < 768); // Adjust breakpoint as needed
@@ -75,16 +82,19 @@ function UserDetails() {
         };
     }, []);
 
+    // Handler for moving to the next section
     const handleNext = () => {
         setActiveSection(activeSection + 1);
         setSloganIndex(prevIndex => (prevIndex + 1) % 5); // Adjust 5 to the total number of slogans
     };
 
+    // Handler for moving to the previous section
     const handlePrevious = () => {
         setActiveSection(activeSection - 1);
         setSloganIndex(prevIndex => (prevIndex - 1 + 5) % 5); // Adjust 5 to the total number of slogans
     };
 
+    // Handler for form field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -110,6 +120,7 @@ function UserDetails() {
         }
     };
 
+    // Handler for next/submit button click
     const handleButtonClick = () => {
         if (activeSection < 2) {
             handleNext(); // Move to the next section
@@ -118,13 +129,13 @@ function UserDetails() {
         }
     };
 
+    // Calculate progress percentage
     const progressPercent = ((activeSection + 1) / 3) * 100;
 
     return (
         <div className="flex justify-center items-center h-screen bg-gray-200" style={{ background: `linear-gradient(to right, #C7C8CC 10%, #ffffff ${progressPercent}%)` }}>
             <div className="py-10 bg-white rounded-lg shadow-sm h-full  md:h-4/5 w-full md:w-4/5 mt-10  flex flex-col justify-between">
                 {/* Personal Information Section */}
-
                 <div className='flex flex-row w-full'>
                     {!isSmallScreen && (
                         <div className='px-8 flex justify-center items-center mx-auto my-auto w-[50%] ml-5 ' >
@@ -150,11 +161,13 @@ function UserDetails() {
                                 <div className="mb-4 w-[50%] flex ">
                                     <TextField id="standard-basic" label="City" variant="standard" className='w-[90%]' name='city' value={formData.city} onChange={handleChange} />
                                 </div>
+                                <div className="mb-4 w-[50%] flex ">
+                                    <TextField id="standard-basic" label="Pin Code" variant="standard" className='w-[90%]' name='pinCode' value={formData.pinCode} onChange={handleChange} />
+                                </div>
                                 <div className="mb-4 w-[50%] flex justify-end">
                                     <TextField id="standard-basic" label="State" variant="standard" className='w-[90%]' name='state' value={formData.state} onChange={handleChange} />
                                 </div>
                             </div>
-
                         </div>
                         {/* Professional Information Section */}
                         <div className={activeSection === 1 ? '' : 'hidden'}>
@@ -171,15 +184,28 @@ function UserDetails() {
                         <div className={activeSection === 2 ? '' : 'hidden'}>
                             <h2 className="text-lg font-bold mb-4">Contact Information</h2>
                             <p className="text-sm text-gray-600 mb-4">Provide contact details for updates and notifications.</p>
-                            <div className="mb-4">
-                                <TextField id="standard-basic" label="Alternate Email" variant="standard" name='contact.alternateEmail' onChange={handleChange} value={formData.contact.alternateEmail} className='w-full' />
-                            </div>
-                            <div className="mb-4">
-                                <TextField id="standard-basic" label="Phone" variant="standard" className='w-full' name='contact.phone' onChange={handleChange} value={formData.contact.phone} />
+                            <div className='flex flex-col space-y-24'>
+                                <div >
+                                    <div className="mb-4">
+                                        <TextField id="standard-basic" label="Alternate Email" variant="standard" name='contact.alternateEmail' onChange={handleChange} value={formData.contact.alternateEmail} className='w-full' />
+                                    </div>
+                                    <div className="mb-4">
+                                        <TextField id="standard-basic" label="Phone" variant="standard" className='w-full' name='contact.phone' onChange={handleChange} value={formData.contact.phone} />
+                                    </div>
+                                </div>
+                                <div className='mt-auto mb-4  flex items-center justify-center'> {/* Add margin-bottom here */}
+                                    <Checkbox /> {/* Checkbox component */}
+
+                                    <p className="">I agree to the Terms of Service and Privacy Policy of Zoho Corporation</p> {/* Add margin-bottom here */}
+
+                                </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
+                {/* Navigation Buttons and Progress Bar */}
                 <div className="flex flex-col items-center">
                     <div className='flex flex-row justify-between w-full px-10'>
                         {activeSection !== 0 && (
@@ -192,13 +218,11 @@ function UserDetails() {
                         <button className="px-4 py-1 rounded-md flex items-center text-xl hover:underline" onClick={handleButtonClick}>
                             {activeSection === 2 ? "Submit" : "Next"} <FcNext className='ml-1 mt-1' />
                         </button>
-
                     </div>
-
+                    {/* Progress Bar */}
                     <div className="w-[20%] h-2 bg-gray-300 rounded-lg my-4">
                         <div className="w-[80%] h-full bg-gray-800 rounded-lg" style={{ width: `${progressPercent}%` }}></div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -206,4 +230,3 @@ function UserDetails() {
 }
 
 export default UserDetails;
-

@@ -7,7 +7,9 @@ function CampusDetailsInput() {
     return (
         <>
         <Navbar/>
-        <CampusDetails style={{ paddingTop: '4rem' }} />
+        <div style={{ paddingTop: '4rem' }}>
+        <CampusDetails />
+        </div>
         <Footer/>
         </>
 

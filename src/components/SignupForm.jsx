@@ -68,7 +68,7 @@ function SignupForm() {
             )}
             {/* Show signup form when not loading */}
             {!loading && (
-                <div className='ml-4 mt-10 lg:ml-0 flex flex-col flex-1' style={{ flexBasis: '55%' }}>
+                <div className='ml-4 mt-10 lg:ml-0 flex flex-col flex-1 container' style={{ flexBasis: '55%' }}>
                     {!showOTPSection ? (
                         <form onSubmit={handleSubmit} className='w-full lg:w-4/6 mx-auto mt-4'>
                             <p className='font-bold text-3xl text-gray-900 my-2'>Sign up to your account</p>
@@ -95,16 +95,16 @@ function SignupForm() {
                                 </div>
                             </div>
                             {/* Signup with Google button */}
-                            <button className='mb-4 flex items-center justify-center border border-gray-400 w-full p-2 rounded-md'>
+                            {/* <button className='mb-4 flex items-center justify-center border border-gray-400 w-full p-2 rounded-md'>
                                 <FcGoogle className='m-1 text-xl' />
                                 <p className='ml-1 font-bold text-gray-700'>Signup with Google</p>
-                            </button>
+                            </button> */}
                             {/* Divider */}
-                            <div className="flex items-center justify-center">
+                            {/* <div className="flex items-center justify-center">
                                 <div className="w-full border-t border-gray-300"></div>
                                 <div className="px-4 text-gray-500">or</div>
                                 <div className="w-full border-t border-gray-300"></div>
-                            </div>
+                            </div> */}
                             {/* Name field */}
                             <div className='mt-4'>
                                 <TextField id="name" label={nameFieldLabel} variant="standard" value={name} onChange={(e) => setName(e.target.value)} className='w-full mt-4' />

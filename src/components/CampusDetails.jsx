@@ -89,7 +89,8 @@ function CampusDetails() {
   };
 
   return (
-    <div className="container mx-auto mt-20 flex flex-col md:flex-row h-screen">
+    <div className="container mx-auto mt-2 flex flex-col md:flex-row h-screen">
+      {/* Left Section: Image Upload */}
       <div className="md:w-1/3 px-8 py-4 bg-gray-200">
         <h2 className="text-3xl font-semibold mb-8">Upload Images</h2>
         <input
@@ -105,7 +106,7 @@ function CampusDetails() {
           </div>
         )}
         {/* Display selected images */}
-        <div className="carousel mt-4">
+        <div className="carousel mt-4" style={{ maxHeight: '600px', overflowY: 'auto' }}>
           {formData.images.map((file, index) => (
             <div key={index} className="relative p-2 mt-2">
               <img
@@ -124,6 +125,7 @@ function CampusDetails() {
           ))}
         </div>
       </div>
+      {/* Right Section: Campus Details Form */}
       <div className="md:w-2/3 px-8 py-4">
         <h2 className="text-3xl font-semibold mb-4">Campus Details</h2>
         <h1 className='text-sm mb-6 text-gray-700'>Take a moment to provide additional details about your campus to enrich the information displayed on your campus details page.</h1>
@@ -197,9 +199,9 @@ function CampusDetails() {
             fullWidth
           />
           <div className='flex flex-row justify-end mr-2'>
-          <Button type="submit" variant="contained" color="primary">
-            Submit
-          </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
           </div>
         </form>
       </div>

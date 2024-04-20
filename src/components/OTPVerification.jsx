@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function OTPVerification({ email, setShowOTPSection, password, name, role, setError }) {
   // State for storing OTP values and error message
@@ -35,33 +38,36 @@ function OTPVerification({ email, setShowOTPSection, password, name, role, setEr
   }, [otpValues]);
 
   // Function to handle form submission
-  function handleSubmit() {
-    const otp = otpValues.join('');
-    fetch('http://localhost:3000/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, otp, password, name, role }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (!data.success) {
-          // Handle error
-          setErrorMessage(data.message);
+// Function to handle form submission
+function handleSubmit() {
+  const otp = otpValues.join('');
+  fetch('http://localhost:3000/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, otp, password, name, role }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        // Handle error
+        toast.success(data.message); // Show error toast notification
+      } else {
+        // Handle successful form submission
+        if (data.success) {
+          window.location.href = '/signin';
         } else {
-          // Handle successful form submission
-          if (data.success) {
-            window.location.href = '/signin';
-          } else {
-            setError('Redirect URL not provided');
-          }
+          setError('Redirect URL not provided');
         }
-      })
-      .catch(error => {
-        console.error(error.message);
-      });
-  }
+      }
+    })
+    .catch(error => {
+      console.error(error.message);
+      toast.error('An error occurred'); // Show generic error toast notification
+    });
+}
+
 
   // Function to go back
   function handleGoBack() {
